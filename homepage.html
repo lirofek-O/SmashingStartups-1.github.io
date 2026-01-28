@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>פורום הסטארטאפיסטים 8200 | הבית של היזמים</title>
+    <link rel="icon" href="./images/Logo.JPG" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-dark: #0f1115;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --accent: #4CAF50;
+            --accent-glow: rgba(76, 175, 80, 0.4);
+            --border-color: #2f333d;
+            --card-bg: rgba(30, 33, 40, 0.7);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Heebo', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        #particles-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.4;
+        }
+
+        .container {
+            max-width: 1200px; margin: 0 auto; padding: 40px 20px; width: 100%; flex: 1;
+        }
+
+        /* Hero Section */
+        .hero { text-align: center; padding: 60px 0 80px; animation: fadeInDown 1s ease-out; }
+        
+        .logo-wrapper {
+            width: 110px; height: 110px; border-radius: 50%; background: #fff;
+            margin: 0 auto 25px; border: 3px solid var(--accent); overflow: hidden;
+            display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 0 50px rgba(76, 175, 80, 0.3);
+            animation: pulse 3s infinite;
+        }
+        .logo-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+        
+        h1 { 
+            font-size: 3.5rem; font-weight: 900; margin-bottom: 15px; 
+            background: linear-gradient(135deg, #fff 0%, #aaa 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        
+        .hero p { 
+            color: var(--text-secondary); max-width: 600px; margin: 0 auto; 
+            font-size: 1.2rem; font-weight: 300;
+        }
+
+        /* Grid */
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 30px;
+            padding-bottom: 60px;
+        }
+
+        /* Article Card Styles */
+        .article-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            backdrop-filter: blur(12px);
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out forwards;
+            position: relative;
+        }
+
+        .article-card:hover { 
+            transform: translateY(-8px); 
+            border-color: var(--card-accent); 
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.6);
+        }
+
+        .card-image-wrapper {
+            height: 200px;
+            display: flex; align-items: center; justify-content: center;
+            background: linear-gradient(135deg, #1e2129, #15171e);
+            font-size: 4.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Icon animation on hover */
+        .article-card:hover .card-icon { transform: scale(1.1) rotate(5deg); transition: 0.5s; }
+
+        .card-content { padding: 30px; flex: 1; display: flex; flex-direction: column; }
+        
+        .tag { 
+            font-size: 0.85rem; font-weight: 800; text-transform: uppercase; 
+            margin-bottom: 12px; display: inline-block; letter-spacing: 1px;
+            color: var(--card-accent);
+        }
+        
+        .card-title { font-size: 1.5rem; font-weight: 800; margin-bottom: 12px; line-height: 1.3; }
+        .card-desc { font-size: 1.05rem; color: var(--text-secondary); margin-bottom: 25px; flex: 1; line-height: 1.6; }
+        
+        .read-more { 
+            font-weight: 700; display: flex; align-items: center; gap: 10px; color: #fff; 
+            transition: 0.3s;
+        }
+        .article-card:hover .read-more { gap: 15px; color: var(--card-accent); }
+
+        /* Specific Card Themes */
+        .card-danny { --card-accent: #4CAF50; animation-delay: 0.2s; } /* Green */
+        .card-base44 { --card-accent: #2196F3; animation-delay: 0.4s; } /* Blue */
+        
+        /* Placeholder Cards */
+        .card-coming-soon { --card-accent: #9E9E9E; opacity: 0.5; animation-delay: 0.6s; cursor: default; }
+        .card-coming-soon:hover { transform: none; border-color: var(--border-color); box-shadow: none; }
+        .card-coming-soon .read-more { color: #666; }
+
+        /* --- NEW SECTIONS STYLES --- */
+        
+        /* About Section */
+        .about-section {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 40px auto 60px;
+            max-width: 900px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out forwards 0.8s;
+        }
+
+        .about-title {
+            font-size: 1.8rem;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .about-text {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        /* Ideas Form Section */
+        .ideas-section {
+            max-width: 600px;
+            margin: 0 auto 60px;
+            text-align: center;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out forwards 1s;
+        }
+
+        .ideas-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--accent);
+        }
+
+        .ideas-input-wrapper {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .ideas-textarea {
+            width: 100%;
+            background: #0a0b0e;
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            padding: 20px;
+            color: #fff;
+            font-family: 'Heebo', sans-serif;
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 100px;
+            transition: all 0.3s;
+        }
+
+        .ideas-textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 15px rgba(76, 175, 80, 0.1);
+        }
+
+        .send-btn {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            padding: 12px 35px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .send-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px var(--accent-glow);
+            background: #43a047;
+        }
+
+        /* Footer */
+        footer { 
+            text-align: center; padding: 50px 0; border-top: 1px solid var(--border-color); 
+            font-size: 0.95rem; color: #666; background: rgba(15, 17, 21, 0.5);
+        }
+       .author-name { 
+            color: #777; font-weight: 400; text-decoration: none;
+            transition: color 0.3s;
+        }
+        .author-name:hover { color: var(--accent); }
+
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0% { box-shadow: 0 0 30px rgba(76, 175, 80, 0.15); } 50% { box-shadow: 0 0 50px rgba(76, 175, 80, 0.4); } 100% { box-shadow: 0 0 30px rgba(76, 175, 80, 0.15); } }
+    </style>
+</head>
+<body>
+    <canvas id="particles-canvas"></canvas>
+
+    <div class="container">
+        <header class="hero">
+            <div class="logo-wrapper"><img src="./images/Logo.JPG" alt="Logo"></div>
+            <h1>פורום הסטארטאפיסטים 8200</h1>
+            <p>הבית של היזמים והיזמות. תובנות מהחדר הסגור, ניתוחים אסטרטגיים וכלים פרקטיים.</p>
+        </header>
+
+        <div class="articles-grid">
+            
+            <!-- Link to Startup Game -->
+            <a href="smashingstartups1v2.html" class="article-card card-danny js-tilt">
+                <div class="card-image-wrapper"><span class="card-icon">💡</span></div>
+                <div class="card-content">
+                    <span class="tag">אסטרטגיה</span>
+                    <h2 class="card-title">The Startup Game</h2>
+                    <p class="card-desc">תובנות מסדנת העומק עם דני לשם: 4 עקרונות הברזל של תעשיית ההון סיכון ולמה רוב היזמים טועים בהגדרה.</p>
+                    <div class="read-more">לקריאת הכתבה ←</div>
+                </div>
+            </a>
+
+            <!-- Link to Base44 -->
+            <a href="base44.html" class="article-card card-base44 js-tilt">
+                <div class="card-image-wrapper"><span class="card-icon">🦄</span></div>
+                <div class="card-content">
+                    <span class="tag">אקזיט</span>
+                    <h2 class="card-title">Base44: אקזיט ב-80M$</h2>
+                    <p class="card-desc">למה Wix שילמה הון על סטארטאפ בן חצי שנה? שיעור קצר על עקומת הסמיילי והמלכודת של האמצע.</p>
+                    <div class="read-more">לקריאת הכתבה ←</div>
+                </div>
+            </a>
+
+            <!-- Future Content Placeholder -->
+            <div class="article-card card-coming-soon">
+                <div class="card-image-wrapper"><span class="card-icon">🔥</span></div>
+                <div class="card-content">
+                    <span class="tag">בקרוב</span>
+                    <h2 class="card-title">Validation Masterclass</h2>
+                    <p class="card-desc">איך לבדוק את הרעיון שלכם בצורה אגרסיבית לפני ששורפים שקל אחד על פיתוח.</p>
+                    <div class="read-more">בקרוב...</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- NEW: About Section -->
+        <section class="about-section">
+            <h2 class="about-title">על הפורום</h2>
+            <p class="about-text">
+                פורום הסטארטאפיסטים של 8200 הוא הבית המקצועי של בוגרי היחידה בעולמות היזמות. 
+                המקום שבו ידע, ניסיון וקשרים נפגשים כדי לקדם יוזמות, לשתף כלים פרקטיים ולייצר ערך אמיתי.
+            </p>
+        </section>
+
+        <!-- NEW: Idea Submission Section -->
+        <section class="ideas-section">
+            <h2 class="ideas-title">יש לכם רעיון לפוסט או כתבה? 💡</h2>
+            <p style="color:#888; margin-bottom:15px;">כתבו לנו כאן וזה ישלח ישירות למייל</p>
+            
+            <div class="ideas-input-wrapper">
+                <textarea id="ideaInput" class="ideas-textarea" placeholder="על מה כדאי לנו לכתוב בפעם הבאה? שתפו אותנו במחשבות שלכם..."></textarea>
+            </div>
+            
+            <button onclick="sendEmail()" class="send-btn">
+                שליחת רעיון 🚀
+            </button>
+        </section>
+
+    </div>
+
+    <footer>
+        <div style="margin-bottom: 10px;">© כל הזכויות שמורות לפורום הסטארטאפיסטים 8200</div>
+        <div>נכתב על ידי <a href="mailto:lirofek@gmail.com" class="author-name">לירון אופק</a></div>
+    </footer>
+
+    <script>
+        // Particles Background
+        const canvas = document.getElementById('particles-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        let particlesArray = [];
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 0.5;
+                this.speedX = Math.random() * 0.4 - 0.2;
+                this.speedY = Math.random() * 0.4 - 0.2;
+                this.opacity = Math.random() * 0.5 + 0.1;
+            }
+            update() {
+                this.x += this.speedX; this.y += this.speedY;
+                if (this.x > canvas.width || this.x < 0) this.speedX *= -1;
+                if (this.y > canvas.height || this.y < 0) this.speedY *= -1;
+            }
+            draw() {
+                ctx.fillStyle = `rgba(255,255,255,${this.opacity})`;
+                ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
+            }
+        }
+
+        function init() { for (let i = 0; i < 60; i++) particlesArray.push(new Particle()); }
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particlesArray.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
+        }
+        
+        window.addEventListener('resize', () => { 
+            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+            particlesArray = []; init(); 
+        });
+        
+        init(); animate();
+
+        // 3D Tilt Effect
+        const cards = document.querySelectorAll('.js-tilt');
+        cards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = ((y - centerY) / centerY) * -5;
+                const rotateY = ((x - centerX) / centerX) * 5;
+
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)`;
+            });
+        });
+
+        // Email Function
+        function sendEmail() {
+            const idea = document.getElementById('ideaInput').value;
+            if (!idea || idea.trim() === "") {
+                alert("אנא כתבו רעיון בתיבה לפני השליחה :)");
+                return;
+            }
+            
+            const subject = "רעיון לפוסט חדש - פורום הסטארטאפיסטים";
+            const body = encodeURIComponent(idea);
+            
+            // This opens the default mail client
+            window.location.href = `mailto:lirofek@gmail.com?subject=${subject}&body=${body}`;
+        }
+    </script>
+</body>
+</html>
