@@ -25,7 +25,14 @@
             margin: 0; padding: 40px 20px;
         }
 
-                /* Canvas Background */
+        .container { max-width: 800px; margin: 0 auto; }
+        
+        /* Nav */
+        .nav-bar { margin-bottom: 40px; }
+        .back-btn { text-decoration: none; color: #b0b0b0; font-weight: 700; display: inline-flex; gap: 10px; transition: 0.3s; }
+        .back-btn:hover { color: var(--accent); }
+
+        /* Canvas Background */
         #particles-canvas {
             position: fixed;
             top: 0;
@@ -35,13 +42,6 @@
             z-index: -1;
             opacity: 0.4;
         }
-
-        .container { max-width: 800px; margin: 0 auto; }
-        
-        /* Nav */
-        .nav-bar { margin-bottom: 40px; }
-        .back-btn { text-decoration: none; color: #b0b0b0; font-weight: 700; display: inline-flex; gap: 10px; transition: 0.3s; }
-        .back-btn:hover { color: var(--accent); }
 
         /* Content */
         header { 
@@ -104,6 +104,7 @@
             position: relative;
             box-shadow: 0 10px 40px rgba(33, 150, 243, 0.15);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: zoom-in; /* אינדיקציה שהתמונה לחיצה */
         }
 
         .image-placeholder:hover {
@@ -164,6 +165,63 @@
         }
         .author-name:hover { color: var(--accent); }
 
+        /* --- LIGHTBOX MODAL STYLES --- */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; 
+            z-index: 1000; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; 
+            background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+            backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s;
+        }
+
+        .modal-content {
+            margin: auto;
+            display: block;
+            max-width: 95%;
+            max-height: 95%;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(33, 150, 243, 0.5);
+            object-fit: contain;
+        }
+
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .close:hover, .close:focus {
+            color: var(--accent);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        @keyframes fadeIn {
+            from {opacity: 0} to {opacity: 1}
+        }
+
+        /* --- MOBILE ADJUSTMENTS --- */
+        @media (max-width: 768px) {
+            .image-placeholder {
+                height: 250px; /* גובה קטן יותר בטלפון כדי שלא יתפוס הכל */
+            }
+            h1 { font-size: 2.2rem; }
+        }
+
         /* Animations */
         @keyframes rotateLine { 100% { transform: rotate(360deg); } }
         @keyframes pulseGlow {
@@ -178,9 +236,15 @@
     <!-- Background Particles -->
     <canvas id="particles-canvas"></canvas>
 
+    <!-- Lightbox Modal -->
+    <div id="imgModal" class="modal" onclick="closeImageModal()">
+        <span class="close">&times;</span>
+        <img class="modal-content" id="fullImage">
+    </div>
+
     <div class="container">
         <nav class="nav-bar">
-            <a href="homepage.html" class="back-btn">→ חזרה לדף הראשי</a>
+            <a href="homepage.html" class="back-btn">→ חזרה ללובי הראשי</a>
         </nav>
 
         <header>
@@ -192,7 +256,8 @@
             <p>איך מאור שלמה, בוגר היחידה, מכר סטארטאפ ב-80 מיליון דולר תוך חצי שנה?</p>
         </header>
 
-        <div class="image-placeholder">
+        <!-- Added onclick to open modal -->
+        <div class="image-placeholder" onclick="openImageModal()">
             <img src="./images/smiley.jpeg" alt="Smiley Curve Graph" class="smiley-img">
         </div>
 
@@ -224,8 +289,24 @@
             <div>נכתב על ידי <a href="mailto:lirofek@gmail.com" class="author-name">לירון אופק</a></div>
         </footer>
     </div>
-<script>
-        // --- 1. Background Particles Animation ---
+
+    <script>
+        // --- Modal Functions ---
+        function openImageModal() {
+            var modal = document.getElementById("imgModal");
+            var img = document.querySelector(".smiley-img");
+            var modalImg = document.getElementById("fullImage");
+            
+            modal.style.display = "flex"; // Use flex to center
+            modalImg.src = img.src;
+        }
+
+        function closeImageModal() {
+            var modal = document.getElementById("imgModal");
+            modal.style.display = "none";
+        }
+
+        // --- Background Particles Animation ---
         const canvas = document.getElementById('particles-canvas');
         const ctx = canvas.getContext('2d');
         let particlesArray;
@@ -236,12 +317,12 @@
 
         class Particle {
             constructor(x, y, directionX, directionY, size, color) {
-                this.x = x;
-                this.y = y;
-                this.directionX = directionX;
-                this.directionY = directionY;
-                this.size = size;
-                this.color = color;
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 1;
+                this.speedX = Math.random() * 0.4 - 0.2;
+                this.speedY = Math.random() * 0.4 - 0.2;
+                this.color = 'rgba(33, 150, 243, 0.5)';
             }
             // Draw particle
             draw() {
@@ -254,8 +335,8 @@
             update() {
                 if (this.x > canvas.width || this.x < 0) this.directionX = -this.directionX;
                 if (this.y > canvas.height || this.y < 0) this.directionY = -this.directionY;
-                this.x += this.directionX;
-                this.y += this.directionY;
+                this.x += this.speedX;
+                this.y += this.speedY;
                 this.draw();
             }
         }
