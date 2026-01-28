@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smashing Startups #1 | פורום הסטארטאפיסטים 8200</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0f1115;
+            --card-bg: #1a1d24;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --accent: #4CAF50; /* ירוק מותאם ללוגו */
+            --accent-glow: rgba(76, 175, 80, 0.2);
+            --border-color: #2f333d;
+            --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            --translator-bg: #1e2129;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Heebo', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            position: relative;
+        }
+
+        /* Canvas Background */
+        #particles-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.4;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* --- HEADER --- */
+        header {
+            text-align: center;
+            padding: 40px 0 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0;
+            animation: fadeInDown 1s ease-out forwards;
+        }
+
+        .logo-wrapper {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: #fff;
+            padding: 5px;
+            margin-bottom: 25px;
+            box-shadow: 0 0 40px var(--accent-glow);
+            border: 3px solid var(--accent);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: pulseGlow 4s infinite ease-in-out;
+            position: relative;
+        }
+
+        .logo-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            z-index: 2;
+        }
+
+        /* אפקט הילה מסתובבת סביב הלוגו */
+        .logo-wrapper::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(transparent, var(--accent), transparent 30%);
+            animation: rotateLine 4s linear infinite;
+            z-index: 1;
+            opacity: 0.5;
+        }
+        
+        @keyframes rotateLine {
+            100% { transform: rotate(360deg); }
+        }
+
+        .brand-tag {
+            background: rgba(76, 175, 80, 0.1);
+            color: var(--accent);
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+            display: inline-block;
+            border: 1px solid rgba(76, 175, 80, 0.2);
+            backdrop-filter: blur(5px);
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ffffff 0%, #b0b0b0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.25rem;
+            max-width: 700px;
+            font-weight: 300;
+        }
+
+        /* --- GRID --- */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+            perspective: 1000px; /* For 3D Tilt */
+        }
+
+        .info-card {
+            background-color: rgba(26, 29, 36, 0.8); /* קצת שקיפות */
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 40px 30px;
+            transition: transform 0.1s ease-out, border-color 0.3s; /* מהירות תגובה לתלת מימד */
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            backdrop-filter: blur(10px);
+            
+            /* אנימציית כניסה */
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+        }
+
+        /* 3D Tilt Effect CSS helper - Javascript will update inline styles */
+        .info-card:hover {
+            border-color: var(--accent);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 20px rgba(76, 175, 80, 0.1);
+            z-index: 10;
+        }
+
+        .info-card:nth-child(1) { animation-delay: 0.2s; }
+        .info-card:nth-child(2) { animation-delay: 0.4s; }
+        .info-card:nth-child(3) { animation-delay: 0.6s; }
+        .info-card:nth-child(4) { animation-delay: 0.8s; }
+
+        .card-number {
+            font-size: 5rem;
+            font-weight: 900;
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            color: rgba(255, 255, 255, 0.03);
+            z-index: 0;
+            line-height: 1;
+            font-family: sans-serif;
+            transition: transform 0.5s ease;
+        }
+        
+        .info-card:hover .card-number {
+            transform: translateY(-5px) scale(1.1);
+            color: rgba(76, 175, 80, 0.08);
+        }
+
+        .info-card h3 {
+            font-size: 1.6rem;
+            margin-bottom: 20px;
+            color: var(--accent);
+            position: relative;
+            z-index: 1;
+            line-height: 1.3;
+        }
+
+        .info-card p, .info-card li {
+            font-size: 1.1rem;
+            color: #d1d1d1;
+            position: relative;
+            z-index: 1;
+        }
+
+        .info-card ul {
+            list-style: none;
+            margin-top: 15px;
+        }
+
+        .info-card li {
+            margin-bottom: 12px;
+            padding-right: 20px;
+            position: relative;
+        }
+
+        .info-card li::before {
+            content: "•";
+            color: var(--accent);
+            position: absolute;
+            right: 0;
+            font-weight: bold;
+            font-size: 1.2em;
+            line-height: 1.4;
+        }
+
+        /* --- TRANSLATOR SECTION (NEW IDEA) --- */
+        .translator-section {
+            margin: 60px 0;
+            text-align: center;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out forwards;
+            animation-delay: 1.0s;
+        }
+
+        .translator-title {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            color: #fff;
+        }
+
+        .translator-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .term-card {
+            background: var(--translator-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .term-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border-color: #ff5252; /* Red for 'bullshit' reveal */
+        }
+
+        .term-text {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #fff;
+            transition: opacity 0.3s ease;
+            position: absolute;
+            width: 100%;
+            padding: 10px;
+        }
+
+        .term-reveal {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #ff5252;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            position: absolute;
+            width: 100%;
+            padding: 10px;
+        }
+
+        .term-card:hover .term-text {
+            opacity: 0;
+        }
+
+        .term-card:hover .term-reveal {
+            opacity: 1;
+        }
+
+        /* --- QUOTE SECTION --- */
+        .quote-section {
+            background: linear-gradient(90deg, rgba(76, 175, 80, 0.05) 0%, transparent 100%);
+            border-right: 6px solid var(--accent);
+            padding: 40px;
+            margin: 60px 0;
+            border-radius: 8px;
+            position: relative;
+            opacity: 0;
+            transform: translateX(20px);
+            animation: fadeInRight 1s ease-out forwards;
+            animation-delay: 1.2s;
+            backdrop-filter: blur(5px);
+        }
+
+        .quote-icon {
+            font-size: 4rem;
+            color: var(--accent);
+            opacity: 0.15;
+            position: absolute;
+            top: 10px;
+            left: 20px;
+        }
+
+        .quote-text {
+            font-size: 1.6rem;
+            font-weight: 700;
+            font-style: italic;
+            margin-bottom: 15px;
+            color: #fff;
+            line-height: 1.4;
+        }
+
+        .quote-author {
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            text-align: center;
+            margin-top: 80px;
+            padding-bottom: 40px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 60px;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out forwards;
+            animation-delay: 1.5s;
+        }
+
+        footer h3 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        footer p {
+            font-size: 1.1rem;
+        }
+
+        .footer-credit {
+            margin-top: 40px;
+            color: #555;
+            font-size: 0.9rem;
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInRight {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 30px rgba(76, 175, 80, 0.15); }
+            50% { box-shadow: 0 0 60px rgba(76, 175, 80, 0.4); }
+            100% { box-shadow: 0 0 30px rgba(76, 175, 80, 0.15); }
+        }
+
+        /* Mobile adjustments */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            .subtitle { font-size: 1.1rem; }
+            .cards-grid { grid-template-columns: 1fr; }
+            .info-card { padding: 30px 20px; margin-bottom: 10px; }
+            .container { padding: 20px; }
+            .quote-text { font-size: 1.3rem; }
+            .translator-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background Particles -->
+    <canvas id="particles-canvas"></canvas>
+
+    <div class="container">
+        
+        <!-- Header -->
+        <header>
+            <div class="logo-wrapper">
+                <img src="Logo.JPG" alt="לוגו הפורום - נורה ירוקה">
+            </div>
+            <span class="brand-tag">תובנות מהחדר הסגור</span>
+            <h1>Smashing Startups #1:<br>The Startup Game</h1>
+            <p class="subtitle">
+                במסגרת סדנת העומק בהובלת דני לשם, צללנו השבוע למאחורי הקלעים של תעשיית ההון סיכון.
+                דני מציג גישה אנליטית וקרה שמפרקת מיתוסים. הנה 4 עקרונות הברזל:
+            </p>
+        </header>
+
+        <!-- Cards Grid -->
+        <div class="cards-grid">
+            
+            <!-- Card 1 -->
+            <article class="info-card js-tilt">
+                <div class="card-number">01</div>
+                <h3>ההגדרה המדויקת לסטארטאפ</h3>
+                <p>לא כל מיזם טכנולוגי הוא סטארטאפ. כדי להיות רלוונטי למודל ה-VC, הארגון חייב לעמוד ב-3 תנאים:</p>
+                <ul>
+                    <li><strong>רווח:</strong> מודל עסקי ברור, לא רק הכנסות.</li>
+                    <li><strong>מהירות:</strong> אקזיט או הנפקה תוך 7-10 שנים.</li>
+                    <li><strong>סקייל ענק:</strong> שווי של מיליארד דולר ומעלה.</li>
+                </ul>
+            </article>
+
+            <!-- Card 2 -->
+            <article class="info-card js-tilt">
+                <div class="card-number">02</div>
+                <h3>השחקנים בשוק: GPs ו-LPs</h3>
+                <p>חשוב להבין ממי אתם מגייסים. "הקרן" היא רק מותג. מאחוריה עומדים:</p>
+                <ul>
+                    <li><strong>LPs (Limited Partners):</strong> הכסף הגדול (פנסיות). הם שמרנים ורוצים ביטחון.</li>
+                    <li><strong>GPs (General Partners):</strong> המנהלים שיושבים מולכם. הם בלחץ להחזיר כסף ומחויבים להשקיע 1% בעצמם.</li>
+                </ul>
+            </article>
+
+            <!-- Card 3 -->
+            <article class="info-card js-tilt">
+                <div class="card-number">03</div>
+                <h3>המתמטיקה האכזרית (Power Law)</h3>
+                <p><strong>85% מהקרנות לא מחזירות אפילו פי 1 על הכסף.</strong></p>
+                <p>לכן, VC הוא מכשיר פיננסי שמחפש רק את ה-Outliers. הקרן חייבת שההשקעה בכם תחזיר את <strong>כל הקרן</strong> (Fund Maker). מיזם "טוב" שלא מתפוצץ, לא מעניין אותם סטטיסטית.</p>
+            </article>
+
+            <!-- Card 4 -->
+            <article class="info-card js-tilt">
+                <div class="card-number">04</div>
+                <h3>משחק פסיכולוגי: FOMO vs. FOLS</h3>
+                <p>המשקיע מונע משני פחדים מנוגדים שאתם חייבים לנהל:</p>
+                <ul>
+                    <li><strong>FOMO:</strong> הפחד לפספס את ההצלחה הגדולה הבאה.</li>
+                    <li><strong>FOLS (Fear Of Looking Stupid):</strong> הפחד להשקיע בכישלון ולהיראות לא מקצועי מול השותפים.</li>
+                </ul>
+            </article>
+
+        </div>
+
+        <!-- Quote Section -->
+        <div class="quote-section">
+            <span class="quote-icon">❝</span>
+            <div class="quote-text">
+                "תוכנית עסקית היא כמו נקניקיות – אם היית יודע איך מכינים אותן, לא היית אוכל אותן."
+            </div>
+            <div class="quote-author">– דני לשם</div>
+            <p style="margin-top: 15px; font-size: 1.1rem; color: #a0a0a0; font-weight: 300;">
+                משקיעים יודעים שהאקסל שלכם הוא תיאורטי. הם לא מחפשים ודאות, הם מחפשים יזמים שמבינים את המשחק.
+            </p>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <h3>רוצים לדעת עוד על החוקים של המשחק?</h3>
+            <p style="margin-bottom: 10px; color: #888;">הצטרפו לקהילה שלנו וקבלו עוד תובנות בלעדיות</p>
+            
+            <div class="footer-credit">
+                © כל הזכויות שמורות לפורום הסטארטאפיסטים של 8200
+            </div>
+        </footer>
+
+    </div>
+
+    <script>
+        // --- 1. Background Particles Animation ---
+        const canvas = document.getElementById('particles-canvas');
+        const ctx = canvas.getContext('2d');
+        let particlesArray;
+
+        // Set canvas size
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        class Particle {
+            constructor(x, y, directionX, directionY, size, color) {
+                this.x = x;
+                this.y = y;
+                this.directionX = directionX;
+                this.directionY = directionY;
+                this.size = size;
+                this.color = color;
+            }
+            // Draw particle
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+            // Update particle position
+            update() {
+                if (this.x > canvas.width || this.x < 0) this.directionX = -this.directionX;
+                if (this.y > canvas.height || this.y < 0) this.directionY = -this.directionY;
+                this.x += this.directionX;
+                this.y += this.directionY;
+                this.draw();
+            }
+        }
+
+        function init() {
+            particlesArray = [];
+            let numberOfParticles = (canvas.height * canvas.width) / 9000;
+            for (let i = 0; i < numberOfParticles; i++) {
+                let size = (Math.random() * 2) + 1;
+                let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
+                let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
+                let directionX = (Math.random() * 0.4) - 0.2;
+                let directionY = (Math.random() * 0.4) - 0.2;
+                let color = 'rgba(76, 175, 80, 0.5)';
+
+                particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
+            }
+        }
+
+        function connect() {
+            let opacityValue = 1;
+            for (let a = 0; a < particlesArray.length; a++) {
+                for (let b = a; b < particlesArray.length; b++) {
+                    let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x)) + 
+                                   ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
+                    if (distance < (canvas.width/7) * (canvas.height/7)) {
+                        opacityValue = 1 - (distance/20000);
+                        ctx.strokeStyle = 'rgba(76, 175, 80,' + opacityValue + ')';
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                        ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            ctx.clearRect(0, 0, innerWidth, innerHeight);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+            }
+            connect();
+        }
+
+        window.addEventListener('resize', function() {
+            canvas.width = innerWidth;
+            canvas.height = innerHeight;
+            init();
+        });
+
+        init();
+        animate();
+
+        // --- 2. 3D Tilt Effect for Cards ---
+        const cards = document.querySelectorAll('.js-tilt');
+
+        cards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                // Calculate rotation (center is 0)
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateX = ((y - centerY) / centerY) * -5; // Max 5deg
+                const rotateY = ((x - centerX) / centerX) * 5;  // Max 5deg
+
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)`;
+            });
+        });
+
+    </script>
+</body>
+</html>
