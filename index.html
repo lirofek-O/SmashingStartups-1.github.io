@@ -3,7 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- כותרת הדף -->
     <title>Smashing Startups #1 | פורום הסטארטאפיסטים 8200</title>
+    
+    <!-- Favicon - האייקון בלשונית הדפדפן -->
+    <link rel="icon" href="image.png" type="image/png">
+
+    <!-- WhatsApp & Social Media Preview (Open Graph) -->
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Smashing Startups #1: The Startup Game">
+    <meta property="og:description" content="תובנות מסדנת העומק עם דני לשם: 4 עקרונות הברזל של תעשיית ההון סיכון. מה זה באמת סטארטאפ ולמה 85% מהקרנות מפסידות?">
+    <meta property="og:image" content="image.png">
+    <meta property="og:site_name" content="פורום הסטארטאפיסטים 8200">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <!-- Fonts & CSS -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700;900&display=swap" rel="stylesheet">
@@ -17,7 +32,6 @@
             --accent-glow: rgba(76, 175, 80, 0.2);
             --border-color: #2f333d;
             --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-            --translator-bg: #1e2129;
         }
 
         * {
@@ -236,76 +250,6 @@
             line-height: 1.4;
         }
 
-        /* --- TRANSLATOR SECTION (NEW IDEA) --- */
-        .translator-section {
-            margin: 60px 0;
-            text-align: center;
-            opacity: 0;
-            animation: fadeInUp 1s ease-out forwards;
-            animation-delay: 1.0s;
-        }
-
-        .translator-title {
-            font-size: 2rem;
-            margin-bottom: 30px;
-            color: #fff;
-        }
-
-        .translator-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-        }
-
-        .term-card {
-            background: var(--translator-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            height: 120px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .term-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            border-color: #ff5252; /* Red for 'bullshit' reveal */
-        }
-
-        .term-text {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #fff;
-            transition: opacity 0.3s ease;
-            position: absolute;
-            width: 100%;
-            padding: 10px;
-        }
-
-        .term-reveal {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #ff5252;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            position: absolute;
-            width: 100%;
-            padding: 10px;
-        }
-
-        .term-card:hover .term-text {
-            opacity: 0;
-        }
-
-        .term-card:hover .term-reveal {
-            opacity: 1;
-        }
-
         /* --- QUOTE SECTION --- */
         .quote-section {
             background: linear-gradient(90deg, rgba(76, 175, 80, 0.05) 0%, transparent 100%);
@@ -404,7 +348,6 @@
             .info-card { padding: 30px 20px; margin-bottom: 10px; }
             .container { padding: 20px; }
             .quote-text { font-size: 1.3rem; }
-            .translator-grid { grid-template-columns: 1fr 1fr; }
         }
     </style>
 </head>
@@ -418,7 +361,7 @@
         <!-- Header -->
         <header>
             <div class="logo-wrapper">
-                <img src="images/Logo.JPG" alt="לוגו הפורום - נורה ירוקה">
+                <img src="Logo.jpg" alt="לוגו הפורום - נורה ירוקה">
             </div>
             <span class="brand-tag">תובנות מהחדר הסגור</span>
             <h1>Smashing Startups #1:<br>The Startup Game</h1>
