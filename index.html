@@ -6,9 +6,6 @@
     
     <!-- כותרת הדף -->
     <title>Smashing Startups #1 | פורום הסטארטאפיסטים 8200</title>
-    
-    <!-- Favicon - האייקון בלשונית הדפדפן -->
-    <link rel="icon" href="image.png" type="image/png">
 
     <!-- WhatsApp & Social Media Preview (Open Graph) -->
     <meta property="og:type" content="article">
@@ -50,6 +47,10 @@
             -webkit-font-smoothing: antialiased;
             position: relative;
         }
+
+        .nav-bar { margin-bottom: 40px; }
+        .back-btn { text-decoration: none; color: #b0b0b0; font-weight: 700; display: inline-flex; gap: 10px; transition: 0.3s; }
+        .back-btn:hover { color: var(--accent); }
 
         /* Canvas Background */
         #particles-canvas {
@@ -304,12 +305,6 @@
             animation-delay: 1.5s;
         }
 
-       .author-name { 
-            color: #777; font-weight: 400; text-decoration: none;
-            transition: color 0.3s;
-        }
-        .author-name:hover { color: var(--accent); }
-        
         footer h3 {
             font-size: 1.8rem;
             margin-bottom: 10px;
@@ -324,6 +319,12 @@
             color: #555;
             font-size: 0.9rem;
         }
+
+       .author-name { 
+            color: #777; font-weight: 400; text-decoration: none;
+            transition: color 0.3s;
+        }
+        .author-name:hover { color: var(--accent); }
 
         /* --- ANIMATIONS --- */
         @keyframes fadeInDown {
@@ -365,6 +366,7 @@
 
     <div class="container">
         
+
         <!-- Header -->
         <header>
             <div class="logo-wrapper">
@@ -442,14 +444,12 @@
             <h3>רוצים לדעת עוד על החוקים של המשחק?</h3>
             <p style="margin-bottom: 10px; color: #888;">הצטרפו לקהילה שלנו וקבלו עוד תובנות בלעדיות</p>
             
+        </footer>
 
     <footer>
         <div style="margin-bottom: 10px;">© כל הזכויות שמורות לפורום הסטארטאפיסטים 8200</div>
         <div>נכתב על ידי <a href="mailto:lirofek@gmail.com" class="author-name">לירון אופק</a></div>
     </footer>
-
-    <script>
-
 
     </div>
 
