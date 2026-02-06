@@ -31,7 +31,8 @@
         }
 
         #particles-canvas {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.4;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; 
+            opacity: 0.3;
         }
 
         .container {
@@ -123,6 +124,7 @@
 
         /* Specific Card Themes */
         .card-danny { --card-accent: #4CAF50; animation-delay: 0.2s; } /* Green */
+        .card-filtering { --card-accent: #FF5722; animation-delay: 0.3s; } /* Orange - NEW */
         .card-base44 { --card-accent: #2196F3; animation-delay: 0.4s; } /* Blue */
         
         /* Placeholder Cards */
@@ -236,6 +238,34 @@
         @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes pulse { 0% { box-shadow: 0 0 30px rgba(76, 175, 80, 0.15); } 50% { box-shadow: 0 0 50px rgba(76, 175, 80, 0.4); } 100% { box-shadow: 0 0 30px rgba(76, 175, 80, 0.15); } }
+
+        /* Mobile adjustments */
+        @media (max-width: 768px) {
+            h1 { 
+                font-size: 2rem; /* גודל כותרת מותאם לנייד */
+                line-height: 1.2;
+                margin-bottom: 20px;
+            }
+            .hero p { font-size: 1.1rem; }
+            
+            /* התאמת הגריד לטור אחד */
+            .articles-grid { 
+                grid-template-columns: 1fr; 
+                gap: 25px; 
+            }
+            
+            /* התאמת פדינג בקונטיינר הראשי */
+            .container { padding: 30px 15px; }
+            
+            /* התאמות נוספות לאזורים התחתונים */
+            .about-section, .ideas-section {
+                padding: 30px 20px;
+                width: 100%;
+            }
+            
+            .about-title, .ideas-title { font-size: 1.5rem; }
+            .about-text { font-size: 1rem; }
+        }
     </style>
 </head>
 <body>
@@ -251,12 +281,23 @@
         <div class="articles-grid">
             
             <!-- Link to Startup Game -->
-            <a href="index.html" class="article-card card-danny js-tilt">
+            <a href="smashingstartups1v2.html" class="article-card card-danny js-tilt">
                 <div class="card-image-wrapper"><span class="card-icon">💡</span></div>
                 <div class="card-content">
                     <span class="tag">אסטרטגיה</span>
                     <h2 class="card-title">The Startup Game</h2>
                     <p class="card-desc">תובנות מסדנת העומק עם דני לשם: 4 עקרונות הברזל של תעשיית ההון סיכון ולמה רוב היזמים טועים בהגדרה.</p>
+                    <div class="read-more">לקריאת הכתבה ←</div>
+                </div>
+            </a>
+
+            <!-- Link to Filtering (New) -->
+            <a href="Filtering.html" class="article-card card-filtering js-tilt">
+                <div class="card-image-wrapper"><span class="card-icon">🌪️</span></div>
+                <div class="card-content">
+                    <span class="tag">סינון רעיונות</span>
+                    <h2 class="card-title">Smashing Startups #2: Filtering</h2>
+                    <p class="card-desc">איך מסננים רעיונות? למה השוק תמיד מנצח את הצוות, ומה זה 'Invest in strength'.</p>
                     <div class="read-more">לקריאת הכתבה ←</div>
                 </div>
             </a>
@@ -290,7 +331,7 @@
             <h2 class="about-title">על הפורום</h2>
             <p class="about-text">
                 פורום הסטארטאפיסטים של 8200 הוא הבית המקצועי של בוגרי היחידה בעולמות היזמות. 
-                המקום שבו ידע, ניסיון וקשרים נפגשים כדי לקדם יוזמות, לשתף כלים פרקטיים ולייצר ערך אמיתי.
+                המקום שבו ידע, ניסיון וקשרים נפגשים כדי לקדם יוזמות, לשתף כלים פרקטיים ולייצר ערך אמיתי בדרך לאקזיט הבא.
             </p>
         </section>
 
@@ -326,7 +367,7 @@
             constructor() {
                 this.x = Math.random() * canvas.width;
                 this.y = Math.random() * canvas.height;
-                this.size = Math.random() * 2 + 0.5;
+                this.size = Math.random() * 3 + 1; // נקודות גדולות
                 this.speedX = Math.random() * 0.4 - 0.2;
                 this.speedY = Math.random() * 0.4 - 0.2;
                 this.opacity = Math.random() * 0.5 + 0.1;
@@ -342,7 +383,11 @@
             }
         }
 
-        function init() { for (let i = 0; i < 350; i++) particlesArray.push(new Particle()); }
+        function init() { 
+            particlesArray = [];
+            for (let i = 0; i < 400; i++) particlesArray.push(new Particle()); // הרבה נקודות (400)
+        }
+
         function animate() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             particlesArray.forEach(p => { p.update(); p.draw(); });
@@ -351,7 +396,7 @@
         
         window.addEventListener('resize', () => { 
             canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-            particlesArray = []; init(); 
+            init(); 
         });
         
         init(); animate();
@@ -387,7 +432,6 @@
             const subject = "רעיון לפוסט חדש - פורום הסטארטאפיסטים";
             const body = encodeURIComponent(idea);
             
-            // This opens the default mail client
             window.location.href = `mailto:lirofek@gmail.com?subject=${subject}&body=${body}`;
         }
     </script>
