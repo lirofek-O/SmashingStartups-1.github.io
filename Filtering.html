@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- כותרת הדף -->
+    <title>Smashing Startups #2 | Filtering</title>
+
+    <!-- WhatsApp & Social Media Preview -->
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Smashing Startups #2: Filtering">
+    <meta property="og:description" content="איך מסננים רעיונות? למה השוק תמיד מנצח את הצוות, ומה זה 'Invest in strength'.">
+    <meta property="og:image" content="image.png">
+    <meta property="og:site_name" content="פורום הסטארטאפיסטים 8200">
+
+    <!-- Fonts & CSS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="icon" href="./images/Logo.JPG" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0f1115;
+            --card-bg: #1a1d24;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --accent: #FF5722; /* כתום - צבע הפרק השני */
+            --accent-glow: rgba(255, 87, 34, 0.2);
+            --border-color: #2f333d;
+            --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Heebo', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .nav-bar { margin-bottom: 40px; }
+        .back-btn { 
+            text-decoration: none; color: #b0b0b0; font-weight: 700; display: inline-flex; gap: 10px; transition: 0.3s; 
+            padding: 8px 16px; border-radius: 20px; background: rgba(255,255,255,0.05);
+        }
+        .back-btn:hover { color: var(--accent); background: rgba(255, 87, 34, 0.1); }
+
+        /* Canvas Background */
+        #particles-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.4;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 1;
+            flex: 1;
+        }
+
+        /* --- HEADER --- */
+        header {
+            text-align: center;
+            padding: 40px 0 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0;
+            animation: fadeInDown 1s ease-out forwards;
+        }
+
+        .logo-wrapper {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: #fff;
+            padding: 5px;
+            margin-bottom: 25px;
+            box-shadow: 0 0 40px var(--accent-glow);
+            border: 3px solid var(--accent);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: pulseGlow 4s infinite ease-in-out;
+            position: relative;
+        }
+
+        .logo-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            z-index: 2;
+        }
+
+        .logo-wrapper::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(transparent, var(--accent), transparent 30%);
+            animation: rotateLine 4s linear infinite;
+            z-index: 1;
+            opacity: 0.5;
+        }
+        
+        @keyframes rotateLine { 100% { transform: rotate(360deg); } }
+
+        .brand-tag {
+            background: rgba(255, 87, 34, 0.1);
+            color: var(--accent);
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+            display: inline-block;
+            border: 1px solid rgba(255, 87, 34, 0.2);
+            backdrop-filter: blur(5px);
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ffffff 0%, #b0b0b0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.25rem;
+            max-width: 700px;
+            font-weight: 300;
+        }
+
+        /* --- GRID & 3D CARDS --- */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
+            padding: 20px;
+            perspective: 1000px;
+        }
+
+        .info-card {
+            background-color: rgba(26, 29, 36, 0.9);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 40px 30px;
+            position: relative;
+            transform-style: preserve-3d;
+            transform: perspective(1000px);
+            opacity: 0;
+            animation: fadeInUp 0.8s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        /* Glare Effect */
+        .info-card::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 20px;
+            background: radial-gradient(
+                circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
+                rgba(255, 255, 255, 0.1) 0%, 
+                transparent 60%
+            );
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .info-card:hover::before { opacity: 1; }
+
+        .info-card:nth-child(1) { animation-delay: 0.1s; }
+        .info-card:nth-child(2) { animation-delay: 0.3s; }
+        .info-card:nth-child(3) { animation-delay: 0.5s; }
+        .info-card:nth-child(4) { animation-delay: 0.7s; }
+
+        .info-card:hover {
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6), 0 0 20px var(--accent-glow);
+            border-color: var(--accent);
+        }
+
+        .card-number {
+            font-size: 5rem;
+            font-weight: 900;
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            color: rgba(255, 255, 255, 0.03);
+            line-height: 1;
+            font-family: sans-serif;
+            transform: translateZ(20px);
+            transition: color 0.3s;
+        }
+        
+        .info-card:hover .card-number { color: rgba(255, 87, 34, 0.1); }
+
+        .info-card h3 {
+            font-size: 1.6rem;
+            margin-bottom: 20px;
+            color: var(--accent);
+            line-height: 1.3;
+            transform: translateZ(40px);
+            text-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+
+        .info-card p, .info-card li {
+            font-size: 1.1rem;
+            color: #d1d1d1;
+            transform: translateZ(30px);
+        }
+
+        .info-card ul {
+            list-style: none;
+            margin-top: 15px;
+            transform: translateZ(30px);
+        }
+
+        .info-card li {
+            margin-bottom: 12px;
+            padding-right: 20px;
+            position: relative;
+        }
+
+        .info-card li::before {
+            content: "•";
+            color: var(--accent);
+            position: absolute;
+            right: 0;
+            font-weight: bold;
+            font-size: 1.2em;
+            line-height: 1.4;
+        }
+
+        /* --- QUOTE SECTION --- */
+        .quote-section {
+            background: linear-gradient(90deg, rgba(255, 87, 34, 0.05) 0%, transparent 100%);
+            border-right: 6px solid var(--accent);
+            padding: 40px;
+            margin: 60px 0;
+            border-radius: 8px;
+            position: relative;
+            opacity: 0;
+            transform: translateX(20px);
+            animation: fadeInRight 1s ease-out forwards 1s;
+        }
+
+        .quote-icon {
+            font-size: 4rem;
+            color: var(--accent);
+            opacity: 0.15;
+            position: absolute;
+            top: 10px;
+            left: 20px;
+        }
+
+        .quote-text {
+            font-size: 1.6rem;
+            font-weight: 700;
+            font-style: italic;
+            margin-bottom: 15px;
+            color: #fff;
+            line-height: 1.4;
+        }
+
+        .quote-author {
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* --- CTA --- */
+        .cta-section {
+            text-align: center;
+            padding: 80px 20px;
+            margin-top: 60px;
+            border-top: 1px solid var(--border-color);
+            background: linear-gradient(180deg, transparent, rgba(255, 87, 34, 0.05));
+        }
+
+        .cta-section h3 { font-size: 2rem; margin-bottom: 15px; color: #fff; }
+        .cta-section p { font-size: 1.2rem; color: #b0b0b0; margin-bottom: 30px; }
+
+        /* Footer */
+        footer {
+            text-align: center; padding: 40px 0;
+            background-color: #0a0b0e; color: #666; font-size: 0.9rem;
+            border-top: 1px solid #1f222a;
+        }
+
+       .author-name { 
+            color: #777; font-weight: 400; text-decoration: none; transition: color 0.3s;
+        }
+        .author-name:hover { color: var(--accent); }
+
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInRight { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 30px rgba(255, 87, 34, 0.15); }
+            50% { box-shadow: 0 0 60px rgba(255, 87, 34, 0.4); }
+            100% { box-shadow: 0 0 30px rgba(255, 87, 34, 0.15); }
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2.3rem; }
+            .subtitle { font-size: 1.1rem; }
+            .cards-grid { grid-template-columns: 1fr; gap: 30px; padding: 10px; }
+            .info-card { padding: 30px 25px; margin-bottom: 0; }
+            .container { padding: 20px 15px; }
+            .quote-text { font-size: 1.2rem; }
+            .quote-section { padding: 30px; }
+            .info-card { transform: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="particles-canvas"></canvas>
+
+    <div class="container">
+        
+        <nav class="nav-bar">
+            <a href="index.html" class="back-btn">→ חזרה ללובי הראשי</a>
+        </nav>
+
+        <header>
+            <div class="logo-wrapper">
+                <img src="./images/Logo.JPG" alt="לוגו הפורום">
+            </div>
+            <span class="brand-tag">Smashing Startups #2</span>
+            <h1>:Filtering<br>איך להרוג רעיון</h1>
+            <p class="subtitle">
+                יותר קל לדעת מה ייכשל מאשר מה יצליח. אוסף ה-Frameworks לסינון רעיונות.
+            </p>
+        </header>
+
+        <div class="cards-grid">
+            
+            <!-- Card 1 -->
+            <article class="info-card js-tilt">
+                <div class="card-number">01</div>
+                <h3>השילוש הקדוש: Market, Product, Team</h3>
+                <p>כדי לנתח סטארטאפ, מפצלים אותו ל-3 צירים:</p>
+                <ul>
+                    <li><strong>שוק:</strong> מספר הלקוחות הפוטנציאלים (לא כסף, אלא כמות חברות/אנשים).</li>
+                    <li><strong>מוצר:</strong> הצעת הערך והבידול.</li>
+                    <li><strong>צוות:</strong> הדגש הוא על אפקטיביות, לא בהכרח ניסיון.</li>
+                </ul>
+            </article>
+
+            <!-- Card 2 -->
+            <article class="info-card js-tilt">
+                <div class="card-number">02</div>
+                <h3>המנצח הברור: השוק</h3>
+                <p>התשובה של דני חד משמעית: <strong>השוק תמיד מנצח.</strong></p>
+                <p style="margin-top:10px;">קחו את הצוות הכי טוב בעולם ותשימו אותו בשוק גרוע (למשל EdTech) - הם ייכשלו. המשקיעים יגידו: "אתם מעולים, הרעיון לא". שוק טוב הוא שוק שבו מספר הלקוחות "מתפוצץ" (כמו ה-PC בשנות ה-90).</p>
+            </article>
+
+            <!-- Card 3 -->
+            <article class="info-card js-tilt">
+                <div class="card-number">03</div>
+                <h3>מבחן הצוות: "Invest in Strength"</h3>
+                <p>משקיעים מחפשים <strong>Super Powers</strong>, לא אנשים "מאוזנים" (Lack of weakness).</p>
+                <ul>
+                    <li><strong>Absolute Best:</strong> האם הצוות הזה הוא הטוב בעולם בתחומו?</li>
+                    <li><strong>הסיוט:</strong> צוות שסיוט להתחרות איתו. אובססיביים לבעיה ללא הפרדה בין חיים לעבודה.</li>
+                </ul>
+            </article>
+
+            <!-- Card 4 -->
+            <article class="info-card js-tilt">
+                <div class="card-number">04</div>
+                <h3>המוצר: Different > Better</h3>
+                <p>השוק מתגמל פתרונות לכאב, לא סתם לבעיה. המבחן הוא <strong>Why Now?</strong></p>
+                <p style="margin-top:10px;">האם יש פלטפורמה חדשה או רגולציה שמאפשרת את זה עכשיו? וחשוב לא פחות - <strong>TAM (Total Addressable Market)</strong> של מעל מיליארד דולר. האם אתם יכולים לקחת "שורת אשראי" קיימת מעסקים?</p>
+            </article>
+
+        </div>
+
+        <div class="quote-section">
+            <span class="quote-icon">❝</span>
+            <div class="quote-text">
+                ".Invest in strength, not in lack of weakness"
+            </div>
+            <div class="quote-author">– Jason Lemkin / Danny Leshem</div>
+        </div>
+
+    </div>
+
+    <section class="cta-section">
+        <h3>רוצים עוד תובנות על Ideation וגיוס כספים?</h3>
+        <p>הצטרפו לדיונים בפורום הסטארטאפיסטים</p>
+    </section>
+
+    <footer>
+        <div style="margin-bottom: 10px;">© כל הזכויות שמורות לפורום הסטארטאפיסטים 8200</div>
+        <div>נכתב על ידי <a href="mailto:lirofek@gmail.com" class="author-name">לירון אופק</a></div>
+    </footer>
+
+    <script>
+        // Background Particles (With Orange Tint)
+        const canvas = document.getElementById('particles-canvas');
+        const ctx = canvas.getContext('2d');
+        let particlesArray;
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        class Particle {
+            constructor(x, y, directionX, directionY, size, color) {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 1;
+                this.speedX = Math.random() * 0.4 - 0.2;
+                this.speedY = Math.random() * 0.4 - 0.2;
+                this.color = 'rgba(255, 87, 34, 0.5)'; // Orange Particles
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+            update() {
+                if (this.x > canvas.width || this.x < 0) this.speedX *= -1;
+                if (this.y > canvas.height || this.y < 0) this.speedY *= -1;
+                this.x += this.speedX; this.y += this.speedY;
+                this.draw();
+            }
+        }
+
+        function init() {
+            particlesArray = [];
+            for (let i = 0; i < 90; i++) particlesArray.push(new Particle());
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+            }
+        }
+
+        window.addEventListener('resize', function() {
+            canvas.width = innerWidth; canvas.height = innerHeight;
+            init();
+        });
+        init(); animate();
+
+        // 3D Tilt Logic
+        const cards = document.querySelectorAll('.js-tilt');
+        cards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = ((y - centerY) / centerY) * -15;
+                const rotateY = ((x - centerX) / centerX) * 15;
+
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)`;
+            });
+        });
+    </script>
+</body>
+</html>
